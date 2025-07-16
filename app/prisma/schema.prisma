@@ -1,0 +1,59 @@
+
+generator client {
+    provider = "prisma-client-js"
+    binaryTargets = ["native", "linux-musl-arm64-openssl-3.0.x"]
+    output = "/home/ubuntu/mediathek_app/app/node_modules/.prisma/client"
+}
+
+datasource db {
+    provider = "postgresql"
+    url      = env("DATABASE_URL")
+}
+
+model UserRating {
+  id        String   @id @default(cuid())
+  videoId   String
+  userId    String
+  rating    Int      @db.SmallInt
+  comment   String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([videoId, userId])
+  @@map("user_ratings")
+}
+
+model Watchlist {
+  id        String   @id @default(cuid())
+  userId    String
+  videoId   String
+  title     String
+  channel   String
+  topic     String?
+  thumbnail String?
+  duration  Int?
+  createdAt DateTime @default(now())
+
+  @@unique([videoId, userId])
+  @@map("watchlist")
+}
+
+model VideoMetadata {
+  id          String   @id @default(cuid())
+  videoId     String   @unique
+  title       String
+  channel     String
+  topic       String?
+  description String?
+  thumbnail   String?
+  duration    Int?
+  imdbRating  Float?
+  imdbId      String?
+  viewCount   Int      @default(0)
+  avgRating   Float?
+  ratingCount Int      @default(0)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@map("video_metadata")
+}
